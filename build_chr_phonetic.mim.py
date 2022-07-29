@@ -114,6 +114,62 @@ def main() -> None:
         if key.startswith("s"):
             translit2syl["ak" + key] = "ᎠᎩ" + translit2syl[key]
 
+    # Create upper-case versions and title-case versions
+    for key in [*translit2syl.keys()]:
+        translit2syl[key.upper()] = translit2syl[key]
+        if len(key) > 1:
+            translit2syl[key[0].upper() + key[1:].lower()] = translit2syl[key]
+
+    # Add pronunciation marks to all previous generated entries that end in a vowel [aeiouv]
+    for key in [*translit2syl.keys()]:
+        # Ogonek (long vowel mark)
+        ogonek: str = "\u0328"
+
+        # Combining X Below (silent vowel)
+        x_below: str = "\u0353"
+
+        # Combining Double Vertical Line Below
+        high_rising_tone: str = "\u0348"
+
+        # Combining Grave Accent Below
+        low_falling_tone: str = "\u0316"
+
+        # Combining Acute Accent Below
+        high_tone: str = "\u0317"
+
+        # Combining Caron Below
+        falling_tone: str = "\u032c"
+
+        # Combining Circumflex Accent Below
+        rising_tone: str = "\u032d"
+
+        # Combining Macron Below
+        level_tone: str = "\u0331"
+
+        # Combining Underline Below
+        # level_tone: str = "\u0332"
+
+        if key[-1] in "aeiouvAEIOUV":
+            translit2syl[key + "p"] = translit2syl[key] + ogonek
+            translit2syl[key + "P"] = translit2syl[key] + ogonek
+
+            translit2syl[key + "x"] = translit2syl[key] + x_below
+            translit2syl[key + "X"] = translit2syl[key] + x_below
+
+            translit2syl[key + "="] = translit2syl[key] + high_rising_tone
+            translit2syl[key + "`"] = translit2syl[key] + low_falling_tone
+            translit2syl[key + ">"] = translit2syl[key] + falling_tone
+            translit2syl[key + "<"] = translit2syl[key] + rising_tone
+            translit2syl[key + "'"] = translit2syl[key] + high_tone
+            translit2syl[key + "_"] = translit2syl[key] + level_tone
+
+            translit2syl[key + "'p"] = translit2syl[key] + high_tone + ogonek
+            translit2syl[key + "_p"] = translit2syl[key] + level_tone + ogonek
+
+            translit2syl[key + "p'"] = translit2syl[key] + high_tone + ogonek
+            translit2syl[key + "p_"] = translit2syl[key] + level_tone + ogonek
+
+    # Output the mim file
     translit_lookup: list[str] = [*translit2syl.keys()]
     translit_lookup.sort()
 
@@ -122,9 +178,10 @@ def main() -> None:
         mim_text += "        (\"" + key + "\" \"" + translit2syl[key] + "\")\n"
     mim_text += footer()
 
-    with open (out_dir.joinpath("chr-phonetic.mim"), "w") as w:
+    with open(out_dir.joinpath("chr-phonetic.mim"), "w") as w:
         w.write(mim_text)
         w.write("\n")
+
 
 if __name__ == '__main__':
     main()
