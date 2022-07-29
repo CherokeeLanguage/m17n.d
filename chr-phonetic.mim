@@ -1,0 +1,23 @@
+(input-method chr2 Cherokee2)
+(description (_ "Phonetic Keyboard"))
+(title "Cherokee Phonetic")
+
+(map
+    (syllabary
+     ("a" "Ꭰ")
+     ("e" "Ꭱ")
+     ("i" "Ꭲ")
+     ("o" "Ꭳ")
+     ("u" "Ꭴ")
+     ("v" "Ꭵ")
+
+     ("ga" "Ꭶ")
+     ("ge" "Ꭸ")
+     ("gi" "Ꭹ")
+     ("go" "Ꭺ")
+     ("gu" "Ꭻ")
+     ("gv" "Ꭼ")
+))
+
+(state
+    (init (syllabary))
