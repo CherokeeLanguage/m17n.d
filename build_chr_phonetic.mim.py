@@ -9,7 +9,7 @@ def char_range(c1, c2):
 
 def header() -> str:
     return textwrap.dedent("""
-    (input-method chr2 Cherokee2)
+    (input-method chr Cherokee)
     (description (_ "Cherokee Syllabary Phonetic Keyboard"))
     (title "Cherokee Phonetic")
     
@@ -56,7 +56,7 @@ def main() -> None:
         translit2syl["m" + vowel] = syl
 
     translit2syl["na"] = "Ꮎ"
-    # translit2syl["nah"] = "Ꮐ"
+    # translit2syl["naH"] = "Ꮐ"
     translit2syl["hna"] = "Ꮏ"
 
     for syl, vowel in zip(char_range("Ꮑ", "Ꮕ"), translit2syl_vowels[1:]):
@@ -96,6 +96,7 @@ def main() -> None:
     for syl, vowel in zip(char_range("Ꮳ", "Ꮸ"), translit2syl_vowels):
         translit2syl["j" + vowel] = syl
         translit2syl["z" + vowel] = syl
+        translit2syl["ch" + vowel] = syl
 
     for syl, vowel in zip(char_range("Ꮹ", "Ꮾ"), translit2syl_vowels):
         translit2syl["w" + vowel] = syl
@@ -116,6 +117,14 @@ def main() -> None:
     translit_lookup: list[str] = [*translit2syl.keys()]
     translit_lookup.sort()
 
+    mim_text: str = header()
+    for key in translit_lookup:
+        mim_text += "        (\"" + key + "\" \"" + translit2syl[key] + "\")\n"
+    mim_text += footer()
+
+    with open (out_dir.joinpath("chr-phonetic.mim"), "w") as w:
+        w.write(mim_text)
+        w.write("\n")
 
 if __name__ == '__main__':
     main()
