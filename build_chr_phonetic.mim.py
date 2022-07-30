@@ -9,9 +9,20 @@ def char_range(c1, c2):
 
 def header() -> str:
     return textwrap.dedent("""
+    ;; chr-phonetic.mim -- Cherokee Syllabary phonetic input method.
+    ;; Copyright (C) 2022
+    ;;   Michael Joyner Conrad
+    ;;   https://github.com/CherokeeLanguage/m17n.d
+    ;;
+    ;; 
+    ;;
+
     (input-method chr Cherokee)
-    (description (_ "Cherokee Syllabary Phonetic Keyboard"))
-    (title "Cherokee Phonetic")
+    (description (_ "Cherokee Syllabary phonetic input method.
+    For more information see https://github.com/CherokeeLanguage/m17n.d.
+    "))
+    
+    (title "ᏣᎳᎩ ᏗᎪᏪᎳ")
     
     (map
         (syllabary
@@ -25,6 +36,11 @@ def footer() -> str:
 
     (state
         (init (syllabary))
+        
+    ;; Local Variables:
+    ;; coding: utf-8
+    ;; mode: lisp
+    ;; End:
     """)
 
 
@@ -120,10 +136,11 @@ def main() -> None:
         if len(key) > 1:
             translit2syl[key[0].upper() + key[1:].lower()] = translit2syl[key]
 
-    # Add pronunciation marks to all previous generated entries that end in a vowel [aeiouv]
+    # Create glottal stop versions using '?' as the magic letter.
+    glottal_stop = "\u0294"  # Unicase IPA glottal stop.
     for key in [*translit2syl.keys()]:
-        # IPA Lengthened
-        long_vowel: str = "\u02d0"
+        new_key = "?" + key
+        translit2syl[new_key] = glottal_stop + translit2syl[key]
 
         # Combining X Below (silent vowel)
         silent_vowel: str = "\u0353"
@@ -146,6 +163,11 @@ def main() -> None:
         # Combining Macron Below
         level_tone: str = "\u0331"
 
+        # IPA Lengthened
+        long_vowel: str = "\u02d0"
+
+    # Add pronunciation marks to all previous generated entries that end in a vowel [aeiouv]
+    for key in [*translit2syl.keys()]:
         if key[-1] in "aeiouvAEIOUV":
             translit2syl[key + "x"] = translit2syl[key] + silent_vowel
             translit2syl[key + "X"] = translit2syl[key] + silent_vowel
@@ -157,13 +179,10 @@ def main() -> None:
             translit2syl[key + "'"] = translit2syl[key] + high_tone
             translit2syl[key + "_"] = translit2syl[key] + level_tone
 
+    # Add vowel long marks to all previous generated entries that end in a vowel or tone
+    for key in [*translit2syl.keys()]:
+        if key[-1] in "aeiouvAEIOUV=`><'_":
             translit2syl[key + "|"] = translit2syl[key] + long_vowel
-
-            translit2syl[key + "'|"] = translit2syl[key] + high_tone + long_vowel
-            translit2syl[key + "|'"] = translit2syl[key] + high_tone + long_vowel
-
-            translit2syl[key + "_|"] = translit2syl[key] + level_tone + long_vowel
-            translit2syl[key + "|_"] = translit2syl[key] + level_tone + long_vowel
 
     # Output the mim file
     translit_lookup: list[str] = [*translit2syl.keys()]
