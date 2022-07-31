@@ -108,6 +108,8 @@ def main() -> None:
 
     for syl, vowel in zip(char_range("Ꮮ", "Ꮲ"), translit2syl_vowels[1:]):
         translit2syl["dl" + vowel] = syl
+        translit2syl["tl" + vowel] = syl
+        translit2syl["hl" + vowel] = syl
 
     for syl, vowel in zip(char_range("Ꮳ", "Ꮸ"), translit2syl_vowels):
         translit2syl["j" + vowel] = syl
