@@ -72,7 +72,7 @@ def main() -> None:
         translit2syl["m" + vowel] = syl
 
     translit2syl["na"] = "Ꮎ"
-    # translit2syl["naH"] = "Ꮐ"
+    translit2syl["naH"] = "Ꮐ"
     translit2syl["hna"] = "Ꮏ"
 
     for syl, vowel in zip(char_range("Ꮑ", "Ꮕ"), translit2syl_vowels[1:]):
