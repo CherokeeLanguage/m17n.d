@@ -105,6 +105,7 @@ def main() -> None:
 
     translit2syl["dla"] = "Ꮬ"
     translit2syl["tla"] = "Ꮭ"
+    translit2syl["hla"] = "Ꮭ"
 
     for syl, vowel in zip(char_range("Ꮮ", "Ꮲ"), translit2syl_vowels[1:]):
         translit2syl["dl" + vowel] = syl
@@ -139,52 +140,49 @@ def main() -> None:
             translit2syl[key[0].upper() + key[1:].lower()] = translit2syl[key]
 
     # Create glottal stop versions using '?' as the magic letter.
-    glottal_stop = "\u0294"  # Unicase IPA glottal stop.
-    for key in [*translit2syl.keys()]:
-        new_key = "?" + key
-        translit2syl[new_key] = glottal_stop + translit2syl[key]
+    # glottal_stop = "\u0294"  # Unicase IPA glottal stop.
+    # for key in [*translit2syl.keys()]:
+    #     new_key = "?" + key
+    #     translit2syl[new_key] = glottal_stop + translit2syl[key]
+    #
+    # Combining X Below (silent vowel)
+    silent_vowel: str = "\u0353"
 
-        # Combining X Below (silent vowel)
-        silent_vowel: str = "\u0353"
+    # Combining Double Vertical Line Below
+    high_rising_tone: str = "\u0348"
 
-        # Combining Double Vertical Line Below
-        high_rising_tone: str = "\u0348"
+    # Combining Grave Accent Below
+    low_falling_tone: str = "\u0316"
 
-        # Combining Grave Accent Below
-        low_falling_tone: str = "\u0316"
+    # Combining Acute Accent Below
+    high_tone: str = "\u0317"
 
-        # Combining Acute Accent Below
-        high_tone: str = "\u0317"
+    # Combining Caron Below
+    falling_tone: str = "\u032c"
 
-        # Combining Caron Below
-        falling_tone: str = "\u032c"
+    # Combining Circumflex Accent Below
+    rising_tone: str = "\u032d"
 
-        # Combining Circumflex Accent Below
-        rising_tone: str = "\u032d"
+    # Combining Macron Below
+    level_tone: str = "\u0331"
 
-        # Combining Macron Below
-        level_tone: str = "\u0331"
+    # IPA Lengthened
+    long_vowel: str = "\u02d0"
 
-        # IPA Lengthened
-        long_vowel: str = "\u02d0"
+    # Pronunciation marks. Use "[Pp]" as the lead.
+    # Note that the pronunciation mark goes before the Syllabary it is applied to!
+    for key in ["P", "p"]:
+        translit2syl[key + "|"] = long_vowel
 
-    # Add pronunciation marks to all previous generated entries that end in a vowel [aeiouv]
-    for key in [*translit2syl.keys()]:
-        if key[-1] in "aeiouvAEIOUV":
-            translit2syl[key + "x"] = translit2syl[key] + silent_vowel
-            translit2syl[key + "X"] = translit2syl[key] + silent_vowel
+        translit2syl[key + "x"] = silent_vowel
+        translit2syl[key + "X"] = silent_vowel
 
-            translit2syl[key + "="] = translit2syl[key] + high_rising_tone
-            translit2syl[key + "`"] = translit2syl[key] + low_falling_tone
-            translit2syl[key + ">"] = translit2syl[key] + falling_tone
-            translit2syl[key + "<"] = translit2syl[key] + rising_tone
-            translit2syl[key + "'"] = translit2syl[key] + high_tone
-            translit2syl[key + "_"] = translit2syl[key] + level_tone
-
-    # Add vowel long marks to all previous generated entries that end in a vowel or tone
-    for key in [*translit2syl.keys()]:
-        if key[-1] in "aeiouvAEIOUV=`><'_":
-            translit2syl[key + "|"] = translit2syl[key] + long_vowel
+        translit2syl[key + "="] = high_rising_tone
+        translit2syl[key + "`"] = low_falling_tone
+        translit2syl[key + ">"] = falling_tone
+        translit2syl[key + "<"] = rising_tone
+        translit2syl[key + "'"] = high_tone
+        translit2syl[key + "_"] = level_tone
 
     # Output the mim file
     translit_lookup: list[str] = [*translit2syl.keys()]
