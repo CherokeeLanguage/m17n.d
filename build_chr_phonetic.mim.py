@@ -169,9 +169,13 @@ def main() -> None:
     # IPA Lengthened
     long_vowel: str = "\u02d0"
 
+    h_metathesis: str = "\u031A"
+
     # Pronunciation marks. Use "[Pp]" as the lead.
     # Note that the pronunciation mark goes before the Syllabary it is applied to!
     for key in ["P", "p"]:
+        translit2syl[key + "h"] = h_metathesis
+
         translit2syl[key + "|"] = long_vowel
 
         translit2syl[key + "x"] = silent_vowel
